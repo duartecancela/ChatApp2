@@ -12,6 +12,7 @@ import com.google.android.material.snackbar.Snackbar
 import pt.ipbeja.chatapp.databinding.ContactItemBinding
 import pt.ipbeja.chatapp.databinding.FragmentContactsBinding
 import pt.ipbeja.chatapp.model.Contact
+import pt.ipbeja.chatapp.model.ContactDatabase
 
 
 class ContactsFragment : Fragment() {
@@ -19,7 +20,6 @@ class ContactsFragment : Fragment() {
     private lateinit var binding: FragmentContactsBinding
     val adapter = ContactsAdapter()
 
-    private var idCounter: Long = 1
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,14 +32,13 @@ class ContactsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.contactList.adapter = adapter
+        binding.contactList.adapter = this.adapter
 
-        setFragmentResultListener(AddContactFragment.REQUEST_KEY) { _, bundle ->
-            val name = bundle.getString(AddContactFragment.NAME_KEY)
-            if (name != null) {
-                adapter.add(Contact(idCounter++, name))
-            }
-        }
+        val todos = ContactDatabase(requireContext())
+            .contactDao()
+            .getAll()
+
+        adapter.data = todos as MutableList<Contact>
 
         binding.addContact.setOnClickListener {
             findNavController().navigate(ContactsFragmentDirections.actionContactsFragmentToAddContactFragment())
@@ -55,8 +54,11 @@ class ContactsFragment : Fragment() {
         init {
             binding.root.setOnLongClickListener {
 
+                val id: Long = contact.id
+                val position: Int = adapterPosition
+
                 Snackbar.make(it, "'${contact.name}' has been deleted.", Snackbar.LENGTH_SHORT).show()
-                adapter.remove(adapterPosition)
+                adapter.remove(id, position)
                 true // devolvemos true se tratamos deste evento
             }
 
@@ -75,7 +77,7 @@ class ContactsFragment : Fragment() {
     inner class ContactsAdapter(contacts: List<Contact> = mutableListOf()) :
         RecyclerView.Adapter<ContactViewHolder>() {
 
-        private val data: MutableList<Contact> = mutableListOf()
+        var data: MutableList<Contact> = mutableListOf()
 
 
         init {
@@ -83,12 +85,12 @@ class ContactsFragment : Fragment() {
         }
 
 
-        fun add(contact: Contact) {
-            data.add(contact)
-            notifyItemInserted(data.lastIndex)
-        }
+        fun remove(id: Long, position: Int) {
 
-        fun remove(position: Int) {
+            ContactDatabase(requireContext())
+                .contactDao()
+                .delete(id)
+
             data.removeAt(position)
             notifyItemRemoved(position)
         }

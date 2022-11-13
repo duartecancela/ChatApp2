@@ -9,13 +9,10 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
 import pt.ipbeja.chatapp.databinding.FragmentAddContactBinding
+import pt.ipbeja.chatapp.model.Contact
+import pt.ipbeja.chatapp.model.ContactDatabase
 
 class AddContactFragment : Fragment() {
-
-    companion object {
-        const val REQUEST_KEY = "ADD_CONTACT"
-        const val NAME_KEY = "CONTACT_NAME"
-    }
 
     private lateinit var binding: FragmentAddContactBinding
 
@@ -32,8 +29,12 @@ class AddContactFragment : Fragment() {
 
         binding.addContact.setOnClickListener {
             val contactName = binding.name.text.toString()
-            val bundlePair = NAME_KEY to contactName // Pair<String, String> -> um par Chave/Valor
-            setFragmentResult(REQUEST_KEY, bundleOf(bundlePair))
+            val contact = Contact(contactName)
+
+            ContactDatabase(requireContext())
+                .contactDao()
+                .insert(contact)
+
             findNavController().popBackStack()
         }
     }

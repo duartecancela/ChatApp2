@@ -1,3 +1,10 @@
 package pt.ipbeja.chatapp.model
 
-data class Contact(val id: Long, val name: String)
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity
+data class Contact(
+    val name: String,
+    @PrimaryKey(autoGenerate = true) val id: Long = 0
+    )
