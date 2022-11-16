@@ -20,7 +20,6 @@ class ContactsFragment : Fragment() {
     private lateinit var binding: FragmentContactsBinding
     val adapter = ContactsAdapter()
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -45,7 +44,6 @@ class ContactsFragment : Fragment() {
         }
 
     }
-
 
     inner class ContactViewHolder(private val binding: ContactItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -79,12 +77,15 @@ class ContactsFragment : Fragment() {
 
         var data: MutableList<Contact> = mutableListOf()
 
-
         init {
             data.addAll(contacts)
         }
 
-
+        /**
+         * Delete object from database
+         * @param id    primary key of row database
+         * @param position  object position at recycler view
+         */
         fun remove(id: Long, position: Int) {
 
             ContactDatabase(requireContext())
@@ -109,6 +110,5 @@ class ContactsFragment : Fragment() {
         override fun getItemCount() = data.size
 
     }
-
 
 }
