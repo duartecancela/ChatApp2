@@ -1,17 +1,5 @@
 package pt.ipbeja.chatapp.ui
 
-import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.setFragmentResultListener
-import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.RecyclerView
-import pt.ipbeja.chatapp.databinding.ContactItemBinding
-import pt.ipbeja.chatapp.databinding.FragmentContactsBinding
-import pt.ipbeja.chatapp.model.Contact
-
 
 /**
  * Esta é uma alternativa ao ContactsFragment realizado em aula, evitando as inner classes e,

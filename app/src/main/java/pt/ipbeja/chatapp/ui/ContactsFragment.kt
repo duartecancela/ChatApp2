@@ -5,14 +5,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import pt.ipbeja.chatapp.databinding.ContactItemBinding
 import pt.ipbeja.chatapp.databinding.FragmentContactsBinding
-import pt.ipbeja.chatapp.model.Contact
-import pt.ipbeja.chatapp.model.ContactDatabase
+import pt.ipbeja.chatapp.db.Contact
+import pt.ipbeja.chatapp.db.ChatDatabase
 
 
 class ContactsFragment : Fragment() {
@@ -33,13 +32,16 @@ class ContactsFragment : Fragment() {
 
         binding.contactList.adapter = this.adapter
 
-        val todos = ContactDatabase(requireContext())
+        val contacts = ChatDatabase(requireContext())
             .contactDao()
             .getAll()
 
-        adapter.data = todos as MutableList<Contact>
+        adapter.data = contacts as MutableList<Contact>
 
         binding.addContact.setOnClickListener {
+
+
+
             findNavController().navigate(ContactsFragmentDirections.actionContactsFragmentToAddContactFragment())
         }
 
@@ -88,7 +90,7 @@ class ContactsFragment : Fragment() {
          */
         fun remove(id: Long, position: Int) {
 
-            ContactDatabase(requireContext())
+            ChatDatabase(requireContext())
                 .contactDao()
                 .delete(id)
 
